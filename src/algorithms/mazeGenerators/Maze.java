@@ -172,11 +172,11 @@ public class Maze {
         compressedMaze[11] = (byte)(endCol%255);
 
         int index = 12;
-        for(int i=index; i<length; i++)
+        for(int i=0; i<length; i++)
         {
             for(int j=0; j<width; j++)
             {
-                compressedMaze[index] = (byte) grid[i][j];
+                compressedMaze[index] = (byte)grid[i][j];
                 index++;
             }
         }
