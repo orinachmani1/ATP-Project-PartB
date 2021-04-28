@@ -1,5 +1,7 @@
 package algorithms.mazeGenerators;
 
+import algorithms.maze3D.Maze3D;
+
 import java.util.ArrayList;
 
 public class Maze {
@@ -16,6 +18,11 @@ public class Maze {
         this.rows = rows;
         this.cols = cols;
         grid = new int[rows][cols];
+    }
+
+    public Maze(byte[] b)
+    {
+        //TODO
     }
 
     public void setStart(Position start) {
@@ -119,5 +126,11 @@ public class Maze {
         // █ ░ - symbols for empty and full cells, maybe we used it in future
         return s.toString();
 
+    }
+
+    public byte[] toByteArray()
+    {
+        //TODO
+        return null;
     }
 }
