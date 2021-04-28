@@ -14,18 +14,18 @@ public class Client implements IClientStrategy {
     }
     private InetAddress serverIP;
     private int serverPort;
-    private IClientStrategy strategy;
+    private IClientStrategy clientStrategy;
 
     public Client(InetAddress serverIP, int serverPort, IClientStrategy strategy) {
         this.serverIP = serverIP;
         this.serverPort = serverPort;
-        this.strategy = strategy;
+        this.clientStrategy = strategy;
     }
 
     public void start(){
         try(Socket serverSocket = new Socket(serverIP, serverPort)){
             System.out.println("connected to server - IP = " + serverIP + ", Port = " + serverPort);
-            strategy.clientStrategy(serverSocket.getInputStream(), serverSocket.getOutputStream());
+            clientStrategy.clientStrategy(serverSocket.getInputStream(), serverSocket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }

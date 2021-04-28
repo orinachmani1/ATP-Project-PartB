@@ -13,6 +13,7 @@ import java.net.SocketTimeoutException;
 
 
 public class Server implements IServerStrategy {
+
     private int port;
     private int listeningIntervalMS;
     private IServerStrategy strategy;
