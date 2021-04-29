@@ -35,7 +35,9 @@ public class Maze {
         int index = 12;
         for (int i = 0; i < rows ; i++) {
             for (int j = 0; j < cols ; j++) {
-                grid[i][j] = comMaze[index];
+                Position p = new Position(i,j);
+                setCell(p,comMaze[index]);
+                index++;
             }
         }
     }
