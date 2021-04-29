@@ -30,8 +30,8 @@ public class MyDecompressorInputStream extends InputStream {
             b[i]=copy[i];
         }
 
-        int rows = b[0]+b[1];
-        int cols = b[2]+b[3];
+        int rows = b[0]*127+b[1];
+        int cols = b[2]*127+b[3];
         int size = ((rows*cols)/8 + 1);
 
         ArrayList<int[]> cells = new ArrayList<>();
@@ -49,7 +49,6 @@ public class MyDecompressorInputStream extends InputStream {
                 index++;
             }
         }
-
         return 0;
     }
 

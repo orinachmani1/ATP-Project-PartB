@@ -22,12 +22,12 @@ public class Maze {
 
     public Maze(byte[] comMaze)
     {
-        this.rows = comMaze[0]*255 + comMaze[1];
-        this.cols = comMaze[2]*255 + comMaze[3];
+        this.rows = comMaze[0]*127 + comMaze[1];
+        this.cols = comMaze[2]*127 + comMaze[3];
         grid = new int[rows][cols];
 
-        Position start = new Position(comMaze[4]*255 +comMaze[5],comMaze[6]*255 +comMaze[7] );
-        Position end = new Position(comMaze[8]*255 +comMaze[9],comMaze[10]*255 +comMaze[11] );
+        Position start = new Position(comMaze[4]*127 +comMaze[5],comMaze[6]*127 +comMaze[7] );
+        Position end = new Position(comMaze[8]*127 +comMaze[9],comMaze[10]*127 +comMaze[11] );
 
         setStart(start);
         setEnd(end);
@@ -158,20 +158,20 @@ public class Maze {
         int size = length*width + 12;
         byte[] compressedMaze = new byte[size];
 
-        compressedMaze[0] = (byte)(length/255);
-        compressedMaze[1] = (byte)(length%255);
-        compressedMaze[2] = (byte)(width/255);
-        compressedMaze[3] = (byte)(width%255);
+        compressedMaze[0] = (byte)(length/127);
+        compressedMaze[1] = (byte)(length%127);
+        compressedMaze[2] = (byte)(width/127);
+        compressedMaze[3] = (byte)(width%127);
 
-        compressedMaze[4] = (byte)(startRow/255);
-        compressedMaze[5] = (byte)(startRow%255);
-        compressedMaze[6] = (byte)(startCol/255);
-        compressedMaze[7] = (byte)(startCol%255);
+        compressedMaze[4] = (byte)(startRow/127);
+        compressedMaze[5] = (byte)(startRow%127);
+        compressedMaze[6] = (byte)(startCol/127);
+        compressedMaze[7] = (byte)(startCol%127);
 
-        compressedMaze[8] = (byte)(endRow/255);
-        compressedMaze[9] = (byte)(endRow%255);
-        compressedMaze[10] = (byte)(endCol/255);
-        compressedMaze[11] = (byte)(endCol%255);
+        compressedMaze[8] = (byte)(endRow/127);
+        compressedMaze[9] = (byte)(endRow%127);
+        compressedMaze[10] = (byte)(endCol/127);
+        compressedMaze[11] = (byte)(endCol%127);
 
         int index = 12;
         for(int i=0; i<length; i++)

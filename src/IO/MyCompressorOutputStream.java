@@ -22,9 +22,6 @@ public class MyCompressorOutputStream extends OutputStream {
     @Override
     public void write(byte[] b) throws IOException {
         byte[] finalCompressedMaze = compress(b);
-//        for (int i = 0; i < finalCompressedMaze.length; i++) {
-//            out.write(finalCompressedMaze[i]);
-//        }
         out.write(finalCompressedMaze);
     }
 
@@ -64,7 +61,6 @@ public class MyCompressorOutputStream extends OutputStream {
         byte[] compressedMaze = convertToBytesArray(compressedMazeData);
 
         return compressedMaze;
-        //return compressedMazeData;
     }
 
     private byte[] convertToBytesArray(ArrayList<Byte> compressedMazeData) {
