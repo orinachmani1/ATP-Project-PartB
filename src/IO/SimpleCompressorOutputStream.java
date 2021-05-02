@@ -34,6 +34,11 @@ public class SimpleCompressorOutputStream extends OutputStream {
             testPos++;
         }
         byte[] finalArray = new byte[sizeOfArray+1];
+
+        for (int i = 0; i<12;i++)
+        {
+            finalArray[i]= b[i];
+        }
         testPos=13;
         finalArray[12]=b[12];
 
@@ -42,7 +47,14 @@ public class SimpleCompressorOutputStream extends OutputStream {
             if(b[testPos]==b[testPos-1])
             {
                 counter++;
+                if  (b.length-1==testPos)
+                {
+                    finalArray[addPos]=(byte)(counter+1);
+                    testPos++;
+                    continue;
+                }
                 testPos++;
+
             }
             else
             {
@@ -50,8 +62,8 @@ public class SimpleCompressorOutputStream extends OutputStream {
                 counter=0;
                 addPos++;
                 testPos++;
-
             }
+
         }
         out.write(finalArray);
 

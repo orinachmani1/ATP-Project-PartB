@@ -8,12 +8,14 @@ public class SimpleDecompressorInputStream extends  InputStream{
     public int read() throws IOException {
         return 0;
     }
-
+    public SimpleDecompressorInputStream(InputStream in) {
+        this.in = in;
+    }
     public int read(byte[] b) throws IOException {
         byte[] readedArray = new byte[b.length];
         this.in.read(readedArray);
         byte test= 0;
-        int index=13;
+        int index=12;
         byte firstByteType;
         for (int i = 0; i<12;i++)
         {
