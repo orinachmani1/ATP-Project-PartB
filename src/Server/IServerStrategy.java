@@ -5,5 +5,5 @@ import java.io.OutputStream;
 
 public interface IServerStrategy {
 
-    void serverStrategy(InputStream inFromServer, OutputStream outToServer);
+    void serverStrategy(InputStream inFromClient, OutputStream outToClient);
 }

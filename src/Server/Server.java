@@ -1,15 +1,14 @@
 package Server;
 
-//import Server.Strategy.IServerStrategy;
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class Server implements IServerStrategy {
@@ -18,16 +17,18 @@ public class Server implements IServerStrategy {
     private int listeningIntervalMS;
     private IServerStrategy strategy;
     private volatile boolean stop;
-   //private final Logger LOG = LogManager.getLogger(); //Log4j2
+   //private final Logger LOG = LogManager.getLogger(); //
+    private ExecutorService pool;
 
 
     public Server(int port, int listeningIntervalMS, IServerStrategy strategy) {
         this.port = port;
         this.listeningIntervalMS = listeningIntervalMS;
         this.strategy = strategy;
+        //this.pool = new Executors.newFixedThreadPool();
     }
 
-    public void start(){
+    public void runServer(){
         try {
             ServerSocket serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout(listeningIntervalMS);
@@ -38,15 +39,24 @@ public class Server implements IServerStrategy {
                     Socket clientSocket = serverSocket.accept();
                     //LOG.info("Client accepted: " + clientSocket.toString());
 
-                    // This thread will handle the new Client
-                    new Thread(() -> {
+                    //This thread will handle the new Client
+                        Thread t = new Thread(() -> {
                         handleClient(clientSocket);
-                    }).start();
+                        });
+                    pool.execute(t);
+                    //}).start();
+
+
+//                    pool.submit(() -> {
+//                        handleClient(clientSocket);
+//                    });
 
                 } catch (SocketTimeoutException e){
                     //LOG.debug("Socket timeout");
                 }
             }
+            serverSocket.close();
+            pool.shutdown();
         } catch (IOException e) {
             //LOG.error("IOException", e);
         }
@@ -67,6 +77,11 @@ public class Server implements IServerStrategy {
         stop = true;
     }
 
+    public void start() {
+        new Thread(() -> {
+            runServer();
+        }).start();
+    }
     @Override
-    public void serverStrategy(InputStream inFromServer, OutputStream outToServer) { }
+    public void serverStrategy(InputStream inFromClient, OutputStream outToClient) { }
 }
