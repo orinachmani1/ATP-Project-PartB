@@ -68,7 +68,5 @@ public class Server implements IServerStrategy {
     }
 
     @Override
-    public void serverStrategy(InputStream inFromServer, OutputStream outToServer) {
-
-    }
+    public void serverStrategy(InputStream inFromServer, OutputStream outToServer) { }
 }
