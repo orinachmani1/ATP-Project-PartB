@@ -63,6 +63,11 @@ public class SimpleCompressorOutputStream extends OutputStream {
                 addPos++;
                 testPos++;
             }
+            if (b.length==testPos && b[b.length-1]==1 && b[b.length-2]==0 )
+            {
+                finalArray[addPos]=(byte)(1);
+
+            }
 
         }
         out.write(finalArray);
