@@ -38,6 +38,4 @@ public class SimpleDecompressorInputStream extends  InputStream{
 
         return 0;
     }
-    //bla 22222
-    //333
 }
