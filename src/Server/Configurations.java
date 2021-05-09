@@ -18,7 +18,7 @@ public class Configurations {
         outputStream= new FileOutputStream("");
         properties.setProperty(("NumberOfThreads"), ("5"));
         properties.setProperty(("MazeGenerator"),("MyMazeGenerator"));
-        properties.setProperty("SearchAlgo", "DFS");
+        properties.setProperty("SearchingAlgorithm", "DeptFirstSearch");
         properties.store(outputStream,"");
     }
     public static String solveAlgo() throws IOException {
@@ -31,12 +31,12 @@ public class Configurations {
     }
 
     public static ISearchingAlgorithm getSearchAlgo(){
-        String searchAlgo= properties.getProperty("SearchAlgo");
-        if(searchAlgo=="DFS"){
+        String searchAlgo= properties.getProperty("SearchingAlgorithm");
+        if(searchAlgo=="DeptFirstSearch"){
                 DepthFirstSearch dfs = new DepthFirstSearch();
                 return dfs;
         }
-        else if (searchAlgo=="BFS"){
+        else if (searchAlgo=="BreadthFirstSearch"){
             BreadthFirstSearch bfs = new BreadthFirstSearch();
             return bfs;
         }
@@ -49,11 +49,11 @@ public class Configurations {
     }
 
 
-    public static ISearchingAlgorithm getSolveAlgo(){
-        FileInputStream fromFile = new FileInputStream("");
-        properties.load(fromFile);
-
-
-
-    }
+//    public static ISearchingAlgorithm getSolveAlgo(){
+//        FileInputStream fromFile = new FileInputStream("");
+//        properties.load(fromFile);
+//
+//
+//
+//    }
 }
