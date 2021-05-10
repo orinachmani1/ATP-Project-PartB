@@ -10,6 +10,7 @@ import java.io.*;
 import java.util.Properties;
 
 public class Configurations {
+
     private static Configurations instance = null;
     static Properties properties = new Properties();
     private static InputStream inputStream;
@@ -38,7 +39,6 @@ public class Configurations {
 
         //return "";
     }
-
     public static ISearchingAlgorithm getSearchAlgo() throws IOException {
         inputStream = new FileInputStream("resources/config.properties");
         properties.load(inputStream);
@@ -67,12 +67,4 @@ public class Configurations {
     }
 
 
-
-//    public static ISearchingAlgorithm getSolveAlgo(){
-//        FileInputStream fromFile = new FileInputStream("");
-//        properties.load(fromFile);
-//
-//
-//
-//    }
 }

@@ -9,58 +9,30 @@ package Server;
 public class ServerStrategySolveSearchProblem implements IServerStrategy{
     @Override
     public void serverStrategy(InputStream inFromClient, OutputStream outToClient) throws IOException, ClassNotFoundException {
-        String tempDirectoryPath = System.getProperty("java.io.tmpdir");
-        ObjectInputStream fc = new ObjectInputStream((inFromClient));
-        ObjectOutputStream tc = new ObjectOutputStream((outToClient));
-        tc.flush();
 
-        Maze getMaze= (Maze)fc.readObject();
-        int hashC= getMaze.toString().hashCode();
+        ObjectInputStream fromClient = new ObjectInputStream((inFromClient));
+        ObjectOutputStream toClient = new ObjectOutputStream((outToClient));
+        toClient.flush();
+
+        Maze maze = (Maze)fromClient.readObject();
+        SearchableMaze searchableMaze = new SearchableMaze(maze);
+
+        int hashC =  maze.toString().hashCode();
+        String tempDirectoryPath = System.getProperty("java.io.tmpdir");
         String tempPath = tempDirectoryPath+hashC;
         File file = new File(tempPath);
 
-        if(file.exists())
+        if(file.exists()) // if the maze already solved  - return the calculated solution
         {
-//            String nameOfAlgo = properties.getProperty("SearchAlgo");
-//            String solvingAlgorithm = "DFS";
-//            String tempath=  tempDirectoryPath+hashC;//W
-//            ISearchingAlgorithm searchAlgo;
-//            if (nameOfAlgo=="DFS");
-//            {
-//                 searchAlgo = new DepthFirstSearch();
-//
-//            }
-//             if  (nameOfAlgo=="BFS"){
-//                   searchAlgo = new BreadthFirstSearch();
-//
-//
-//             }
-//            if  (nameOfAlgo=="BestFirstSearch"){
-//                  searchAlgo = new BestFirstSearch();
-//
-//
-//            }
+            FileInputStream fileInput = new FileInputStream(tempPath);
+            ObjectInputStream fileOutput = new ObjectInputStream(fileInput);
 
-            //ISearchable searchableM= new SearchableMaze(getMaze);
-            //Solution solution = searchAlgo.solve(searchableM);
-            //tc.writeObject(solution);//2client
-            //tc.flush();
-            FileInputStream solContent= new FileInputStream(tempPath);
-            ObjectInputStream inputSol=new ObjectInputStream(solContent);
-            Solution solution;
-            solution=(Solution) inputSol.readObject();
-            tc.writeObject(solution);
-            solContent.close();
-//            FileOutputStream tempF = new FileOutputStream(tempPath);
-//            ObjectOutputStream writeM = new ObjectOutputStream(tempF);
-//            writeM.writeObject(getMaze);
-//            String soluPath = tempDirectoryPath +  + getMaze.toString().hashCode() +"solution";
-//            FileOutputStream fs = new FileOutputStream(soluPath);
-//            ObjectOutputStream writeSolu = new ObjectOutputStream(fs);
-//            writeSolu.writeObject(solution);
-
+            Solution sol;
+            sol = (Solution)fileOutput.readObject();
+            toClient.writeObject(sol);
+            fileInput.close();
+            fileOutput.close();
         }
-
 
         else{
             String nameOfAlgo = properties.getProperty("SearchingAlgorithm");
@@ -78,8 +50,7 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy{
                 searchAlgo = new BestFirstSearch();
             }
 
-
-            SearchableMaze sm = new SearchableMaze(getMaze);
+            SearchableMaze sm = new SearchableMaze(maze);
             Solution solution;
             solution=searchAlgo.solve(sm);
             FileOutputStream fileOutputStream = new FileOutputStream(tempPath);
@@ -89,7 +60,7 @@ public class ServerStrategySolveSearchProblem implements IServerStrategy{
             objectOutputStream.flush();
             fileOutputStream.close();
             objectOutputStream.close();
-            tc.writeObject(solution);
+            toClient.writeObject(solution);
         }
 
     }
