@@ -18,15 +18,17 @@ public class Server implements IServerStrategy {
     private IServerStrategy strategy;
     private volatile boolean stop;
    //private final Logger LOG = LogManager.getLogger(); //
-    private ExecutorService pool;
+    private ExecutorService threadPool;
 
 
     public Server(int port, int listeningIntervalMS, IServerStrategy strategy) {
         this.port = port;
         this.listeningIntervalMS = listeningIntervalMS;
         this.strategy = strategy;
-        //this.pool = new Executors.newFixedThreadPool();
-    }
+        this.stop = false;
+        this.threadPool = Executors.newFixedThreadPool(3);
+        //this.threadPool = Executors.newFixedThreadPool(Configurations.getNumOfThreads());
+}
 
     public void runServer(){
         try {
@@ -40,23 +42,21 @@ public class Server implements IServerStrategy {
                     //LOG.info("Client accepted: " + clientSocket.toString());
 
                     //This thread will handle the new Client
-                        Thread t = new Thread(() -> {
+                    /*threadPool.execute(() -> {
                         handleClient(clientSocket);
-                        });
-                    pool.execute(t);
-                    //}).start();
+                    });*/
 
-
-//                    pool.submit(() -> {
-//                        handleClient(clientSocket);
-//                    });
+                    Thread t = new Thread(() -> {
+                        handleClient(clientSocket);
+                    });
+                    threadPool.execute(t);
 
                 } catch (SocketTimeoutException e){
                     //LOG.debug("Socket timeout");
                 }
             }
+            threadPool.shutdown();
             serverSocket.close();
-            pool.shutdown();
         } catch (IOException e) {
             //LOG.error("IOException", e);
         }
@@ -83,5 +83,5 @@ public class Server implements IServerStrategy {
         }).start();
     }
     @Override
-    public void serverStrategy(InputStream inFromClient, OutputStream outToClient) { }
+    public void serverStrategy(InputStream inputStream, OutputStream outputStream) { }
 }

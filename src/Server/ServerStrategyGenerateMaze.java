@@ -4,15 +4,15 @@ import IO.MyCompressorOutputStream;
 import algorithms.mazeGenerators.*;
 
 import java.io.*;
-import java.util.ArrayList;
 
 public class ServerStrategyGenerateMaze implements IServerStrategy {
 
+    public ServerStrategyGenerateMaze(){};
     @Override
-    public void serverStrategy(InputStream inFromClient, OutputStream outToClient) {
+    public void serverStrategy(InputStream inputStream, OutputStream outputStream) {
         try {
-            ObjectInputStream fromClient = new ObjectInputStream(inFromClient);
-            ObjectOutputStream toClient = new ObjectOutputStream(outToClient);
+            ObjectInputStream fromClient = new ObjectInputStream(inputStream);
+            ObjectOutputStream toClient = new ObjectOutputStream(outputStream);
             ByteArrayOutputStream b = new ByteArrayOutputStream();
 
             Object mazeSizeObj = fromClient.readObject();
@@ -24,7 +24,7 @@ public class ServerStrategyGenerateMaze implements IServerStrategy {
             MyCompressorOutputStream myCompressor = new MyCompressorOutputStream(b);
             myCompressor.write(mazeAsBytes);
 
-            toClient.write(b.toByteArray());//or just b?
+            toClient.writeObject(b.toByteArray());
             toClient.flush();
 
             fromClient.close();

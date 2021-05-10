@@ -18,6 +18,7 @@ public class Maze {
         this.rows = rows;
         this.cols = cols;
         grid = new int[rows][cols];
+
     }
 
     public Maze(byte[] comMaze)
