@@ -1,12 +1,8 @@
-package test;
-
-
 import Client.*;
 import IO.MyCompressorOutputStream;
 import IO.MyDecompressorInputStream;
 import Server.*;
 import algorithms.mazeGenerators.AMazeGenerator;
-import algorithms.mazeGenerators.IMazeGenerator;
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.MyMazeGenerator;
 import algorithms.search.AState;
@@ -158,41 +154,32 @@ public class main {
         Server solveSearchProblemServer = new Server(Port_ServerSearchProblemSolver, 1000, new ServerStrategySolveSearchProblem());
 
         //Starting  servers
-        //solveSearchProblemServer.start();
+        solveSearchProblemServer.start();
         mazeGeneratingServer.start();
 
         CommunicateWithServer_MazeGenerating(counter);
-        //CommunicateWithServer_SolveSearchProblem(counter);
+        CommunicateWithServer_SolveSearchProblem(counter);
 
         //Stopping all servers
         mazeGeneratingServer.stop();
-        //solveSearchProblemServer.stop();
+        solveSearchProblemServer.stop();
     }
 
     private static void CommunicateWithServer_MazeGenerating(int i) {
         AtomicInteger testsPassed = new AtomicInteger(0);
         try {
             new Client(InetAddress.getLocalHost(), Port_ServerMazeGenerating, new IClientStrategy() {
-            //new Client(InetAddress.getLocalHost(), Port_ServerMazeGenerating, new ServerStrategyGenerateMaze() {
                 @Override
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
                     try {
                         total_test++;
                         int size = (int) (50 * (i+1));
                         ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
-                        //toServer.flush();
+                        toServer.flush();
                         int[] mazeDimensions = new int[]{size, size};
                         toServer.writeObject(mazeDimensions); //send maze dimensions to server
                         toServer.flush();
                         ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
-
-                        //TODO REMOVE
-                        /*IMazeGenerator img = new MyMazeGenerator();
-                        Maze m = img.generate(50,50);
-                        byte[] compressedMaze = new byte[10000];
-                        compressedMaze=m.toByteArray();*/
-                        //TODO REMOVE
-
                         byte[] compressedMaze = (byte[]) fromServer.readObject(); //read generated maze (compressed with MyCompressor) from server
                         InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
                         byte[] decompressedMaze = new byte[1000000 /*CHANGE SIZE ACCORDING TO YOU MAZE SIZE*/]; //allocating byte[] for the decompressed maze -
@@ -227,13 +214,13 @@ public class main {
                         total_test++;
                         int size = (int) (50 * (i+1));
                         ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
-                        ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
                         toServer.flush();
                         MyMazeGenerator mg = new MyMazeGenerator();
 
                         Maze maze = mg.generate(size, size);
                         toServer.writeObject(maze); //send maze to server
                         toServer.flush();
+                        ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
                         Solution mazeSolution = (Solution) fromServer.readObject(); //read generated maze (compressed with MyCompressor) from server
 
                         //Print Maze Solution retrieved from the server
@@ -246,7 +233,7 @@ public class main {
                             appendToResultsFile(String.valueOf(total_test));
                         }
                     } catch (Exception e) {
-//
+
                     }
                 }
             }).communicateWithServer();

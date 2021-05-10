@@ -67,7 +67,7 @@ public class Server implements IServerStrategy {
             strategy.serverStrategy(clientSocket.getInputStream(), clientSocket.getOutputStream());
             //LOG.info("Done handling client: " + clientSocket.toString());
             clientSocket.close();
-        } catch (IOException e){
+        } catch (IOException | ClassNotFoundException e){
             //LOG.error("IOException", e);
         }
     }

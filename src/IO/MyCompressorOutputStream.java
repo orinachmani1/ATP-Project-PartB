@@ -52,7 +52,7 @@ public class MyCompressorOutputStream extends OutputStream {
             if(countEight==8)
             {
                 compressedMazeData.add(getDecValue(sum).byteValue());
-                System.out.println(i + " : " + sum);
+                //System.out.println(i + " : " + sum);
                 countEight=0;
                 sum=0;
             }
