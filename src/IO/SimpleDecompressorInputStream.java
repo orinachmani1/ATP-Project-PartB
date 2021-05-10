@@ -25,13 +25,16 @@ public class SimpleDecompressorInputStream extends  InputStream{
         if(firstByteType==1)
         { test=1;}
 
-        for (int i=13; i<readedArray.length;i++)
+//        for (int i=13; i<readedArray.length;i++)
+        int i =13;
+        while (readedArray[i]!=0)
         {
             for (int j=0;j<readedArray[i];j++)
             {
                 b[index]=test;
                 index++;
             }
+            i++;
             if (test==0){test=1;}
             else{test=0;}
         }
