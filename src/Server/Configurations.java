@@ -1,5 +1,9 @@
 package Server;
 
+import algorithms.mazeGenerators.AMazeGenerator;
+import algorithms.mazeGenerators.EmptyMazeGenerator;
+import algorithms.mazeGenerators.MyMazeGenerator;
+import algorithms.mazeGenerators.SimpleMazeGenerator;
 import algorithms.search.BestFirstSearch;
 import algorithms.search.BreadthFirstSearch;
 import algorithms.search.DepthFirstSearch;
@@ -10,6 +14,7 @@ import java.io.*;
 import java.util.Properties;
 
 public class Configurations {
+
     private static Configurations instance = null;
     static Properties properties = new Properties();
     private static InputStream inputStream;
@@ -21,58 +26,58 @@ public class Configurations {
         }
         return instance;
     }
-    private void configurations() throws IOException {
+    private void Configurations() throws IOException {
         OutputStream outputStream;
-        outputStream= new FileOutputStream("resources/config.properties");
-        properties.setProperty(("NumberOfThreads"), ("5"));
-        properties.setProperty(("MazeGenerator"),("MyMazeGenerator"));
-        properties.setProperty("SearchingAlgorithm", "DeptFirstSearch");
+        outputStream = new FileOutputStream("resources/config.properties");
+        properties.setProperty(("threadPoolSize"), ("5"));
+        properties.setProperty(("mazeGeneratingAlgorithm"),("MyMazeGenerator"));
+        properties.setProperty("mazeSearchingAlgorithm", "BestFirstSearch");
         properties.store(outputStream,null);
     }
-    public static String solveAlgo() throws IOException {
-
+    public static AMazeGenerator getGeneratingAlgorithm() throws IOException {
         inputStream = new FileInputStream("resources/config.properties");
         properties.load(inputStream);
-        return properties.getProperty("SolveAlgo");
+        String GeneratingAlgorithm= properties.getProperty("mazeGeneratingAlgorithm");
 
+        if (GeneratingAlgorithm.equals("SimpleMazeGenerator")){
+            return new SimpleMazeGenerator();
+        }
 
-        //return "";
+        else if(GeneratingAlgorithm.equals("EmptyMazeGenerator")){
+            return new EmptyMazeGenerator();
+        }
+
+        else
+            {return new MyMazeGenerator();}
     }
 
-    public static ISearchingAlgorithm getSearchAlgo() throws IOException {
+    public static ISearchingAlgorithm getSearchingAlgorithm() throws IOException {
         inputStream = new FileInputStream("resources/config.properties");
         properties.load(inputStream);
-        String searchAlgo= properties.getProperty("SearchingAlgorithm");
-        if(searchAlgo=="DeptFirstSearch"){
-                DepthFirstSearch dfs = new DepthFirstSearch();
-                return dfs;
+        String searchAlgo= properties.getProperty("mazeSearchingAlgorithm");
+
+        if(searchAlgo.equals("DeptFirstSearch")){
+            return new DepthFirstSearch();
         }
-        else if (searchAlgo=="BreadthFirstSearch"){
-            BreadthFirstSearch bfs = new BreadthFirstSearch();
-            return bfs;
+        else if (searchAlgo.equals("BreadthFirstSearch")){
+            return new BreadthFirstSearch();
         }
         else{
-            BestFirstSearch bestFirst = new BestFirstSearch();
-            return bestFirst;
-
+            return new BestFirstSearch();
         }
-
-    }
-    public static int numberOfThreads(){
-        inputStream = new FileInputStream("resources/config.properties");
-        properties.load(inputStream);
-        String numOfThreads = properties.getProperty("NumberOfThreads");
-        int numOfThreadsInt = Integer.parseInt(numOfThreads);
-        return numOfThreadsInt;
     }
 
+    public static int numberOfThreads() {
+        try {
+            inputStream = new FileInputStream("resources/config.properties");
+            properties.load(inputStream);
+            String numOfThreads = properties.getProperty("threadPoolSize");
+            return Integer.parseInt(numOfThreads);
+        }
+        catch (Exception E){
+        }
+        return 1;
+    }
 
 
-//    public static ISearchingAlgorithm getSolveAlgo(){
-//        FileInputStream fromFile = new FileInputStream("");
-//        properties.load(fromFile);
-//
-//
-//
-//    }
 }

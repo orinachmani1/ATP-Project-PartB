@@ -21,59 +21,48 @@ public class Server implements IServerStrategy {
     private ExecutorService threadPool;
 
 
-    public Server(int port, int listeningIntervalMS, IServerStrategy strategy) {
+    public Server(int port, int listeningIntervalMS, IServerStrategy strategy){
         this.port = port;
         this.listeningIntervalMS = listeningIntervalMS;
         this.strategy = strategy;
         this.stop = false;
-        this.threadPool = Executors.newFixedThreadPool(3);
-        //this.threadPool = Executors.newFixedThreadPool(Configurations.getNumOfThreads());
+        Configurations.getInstance();
+        this.threadPool = Executors.newFixedThreadPool(Configurations.numberOfThreads());
+        System.out.println(Configurations.numberOfThreads());
 }
 
     public void runServer(){
         try {
             ServerSocket serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout(listeningIntervalMS);
-            //LOG.info("Starting server at port = " + port);
-
             while (!stop) {
                 try {
                     Socket clientSocket = serverSocket.accept();
-                    //LOG.info("Client accepted: " + clientSocket.toString());
-
                     //This thread will handle the new Client
-                    /*threadPool.execute(() -> {
-                        handleClient(clientSocket);
-                    });*/
-
+//                    threadPool.execute(() -> {
+//                        handleClient(clientSocket);
+//                    });
                     Thread t = new Thread(() -> {
                         handleClient(clientSocket);
                     });
                     threadPool.execute(t);
 
-                } catch (SocketTimeoutException e){
-                    //LOG.debug("Socket timeout");
-                }
+                } catch (SocketTimeoutException e){}
             }
             threadPool.shutdown();
-            serverSocket.close();
+            //serverSocket.close();
         } catch (IOException e) {
-            //LOG.error("IOException", e);
         }
     }
 
     private void handleClient(Socket clientSocket) {
         try {
             strategy.serverStrategy(clientSocket.getInputStream(), clientSocket.getOutputStream());
-            //LOG.info("Done handling client: " + clientSocket.toString());
             clientSocket.close();
-        } catch (IOException e){
-            //LOG.error("IOException", e);
-        }
+        } catch (IOException | ClassNotFoundException e){ }
     }
 
     public void stop(){
-        //LOG.info("Stopping server...");
         stop = true;
     }
 

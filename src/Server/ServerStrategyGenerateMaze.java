@@ -17,7 +17,9 @@ public class ServerStrategyGenerateMaze implements IServerStrategy {
 
             Object mazeSizeObj = fromClient.readObject();
             int[] mazeSize = (int[])mazeSizeObj;
+            //IMazeGenerator generator = Configurations.g
             IMazeGenerator generator = new MyMazeGenerator();//TODO enable according to configuration
+            //AMazeGenerator generator = Configurations.getGeneratingAlgorithm();
 
             Maze maze = generator.generate(mazeSize[0],mazeSize[1]);
             byte[] mazeAsBytes = maze.toByteArray();
@@ -26,9 +28,10 @@ public class ServerStrategyGenerateMaze implements IServerStrategy {
 
             toClient.writeObject(b.toByteArray());
             toClient.flush();
-
+            //System.out.println("maze generated");
             fromClient.close();
             toClient.close();
+            b.close();
         }
 
         catch (Exception e) {

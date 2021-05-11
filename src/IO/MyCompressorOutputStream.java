@@ -22,11 +22,11 @@ public class MyCompressorOutputStream extends OutputStream {
     @Override
     public void write(byte[] b) throws IOException {
         byte[] finalCompressedMaze = compress(b);
-//        for (int i = 0; i < finalCompressedMaze.length ; i++) {
-//            out.write(finalCompressedMaze[i]);
-//        }
+        for (int i = 0; i < finalCompressedMaze.length ; i++) {
+            out.write(finalCompressedMaze[i]);
+        }
 
-        out.write(finalCompressedMaze);
+        //out.write(finalCompressedMaze);
     }
 
     public byte[] compress(byte[] mazeData) {
@@ -52,7 +52,7 @@ public class MyCompressorOutputStream extends OutputStream {
             if(countEight==8)
             {
                 compressedMazeData.add(getDecValue(sum).byteValue());
-                System.out.println(i + " : " + sum);
+                //System.out.println(i + " : " + sum);
                 countEight=0;
                 sum=0;
             }
