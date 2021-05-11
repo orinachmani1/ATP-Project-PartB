@@ -5,7 +5,8 @@ import Server.*;
 import algorithms.mazeGenerators.AMazeGenerator;
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.MyMazeGenerator;
-import algorithms.search.*;
+import algorithms.search.AState;
+import algorithms.search.Solution;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -18,7 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class main {
+public class Main {
 
     private static final String resultsFilePath = "results.txt";
     private static final String logFilePath = "results.log";
@@ -159,6 +160,10 @@ public class main {
         CommunicateWithServer_MazeGenerating(counter);
         CommunicateWithServer_SolveSearchProblem(counter);
 
+      //  System.out.println(total_test);
+      //  System.out.println(total_pass);
+
+
         //Stopping all servers
         mazeGeneratingServer.stop();
         solveSearchProblemServer.stop();
@@ -186,6 +191,7 @@ public class main {
                         Maze maze = new Maze(decompressedMaze);
                         if (maze.toByteArray().length > 1000) {
                             testsPassed.incrementAndGet();
+
                         }
                         else
                         {
@@ -214,11 +220,10 @@ public class main {
                         int size = (int) (50 * (i+1));
                         ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
                         toServer.flush();
-                        /*int x =5;
-                        toServer.writeObject(x);*/
                         MyMazeGenerator mg = new MyMazeGenerator();
+
                         Maze maze = mg.generate(size, size);
-                        toServer.writeObject(maze); //send maze to server     ///  ERROR!!
+                        toServer.writeObject(maze); //send maze to server
                         toServer.flush();
                         ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
                         Solution mazeSolution = (Solution) fromServer.readObject(); //read generated maze (compressed with MyCompressor) from server
@@ -227,13 +232,14 @@ public class main {
                         ArrayList<AState> mazeSolutionSteps = mazeSolution.getSolutionPath();
                         if(!mazeSolutionSteps.isEmpty()){
                             testsPassed.incrementAndGet();
+
                         }
                         else
                         {
                             appendToResultsFile(String.valueOf(total_test));
                         }
                     } catch (Exception e) {
-
+//
                     }
                 }
             }).communicateWithServer();
@@ -243,7 +249,6 @@ public class main {
         } finally {
         }
         total_pass +=  testsPassed.get();
-
     }
     //</editor-fold>
 }

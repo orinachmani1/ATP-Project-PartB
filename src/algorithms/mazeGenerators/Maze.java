@@ -2,9 +2,10 @@ package algorithms.mazeGenerators;
 
 import algorithms.maze3D.Maze3D;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Maze {
+public class Maze implements Serializable {
 
     private Position start;
     private Position end;

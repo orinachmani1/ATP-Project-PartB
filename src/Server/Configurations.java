@@ -18,16 +18,22 @@ public class Configurations {
     private static Configurations instance = null;
     static Properties properties = new Properties();
     private static InputStream inputStream;
+    OutputStream outputStream;
+
 
     public static Configurations getInstance(){
         if (instance==null)
         {
-            instance=new Configurations();
+            try {
+                instance=new Configurations();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return instance;
     }
-    private void Configurations() throws IOException {
-        OutputStream outputStream;
+    private  Configurations() throws IOException {
+
         outputStream = new FileOutputStream("resources/config.properties");
         properties.setProperty(("threadPoolSize"), ("5"));
         properties.setProperty(("mazeGeneratingAlgorithm"),("MyMazeGenerator"));
@@ -50,7 +56,9 @@ public class Configurations {
         else
             {return new MyMazeGenerator();}
     }
-
+    public String SoltuionAlgoName(){
+        return properties.getProperty("mazeSearchingAlgorithm");
+    }
     public static ISearchingAlgorithm getSearchingAlgorithm() throws IOException {
         inputStream = new FileInputStream("resources/config.properties");
         properties.load(inputStream);

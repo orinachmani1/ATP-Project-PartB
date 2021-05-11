@@ -28,7 +28,7 @@ public class Server implements IServerStrategy {
         this.stop = false;
         Configurations.getInstance();
         this.threadPool = Executors.newFixedThreadPool(Configurations.numberOfThreads());
-        System.out.println(Configurations.numberOfThreads());
+       // System.out.println(Configurations.numberOfThreads());
 }
 
     public void runServer(){

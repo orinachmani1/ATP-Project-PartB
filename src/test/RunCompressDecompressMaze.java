@@ -13,8 +13,8 @@ public class RunCompressDecompressMaze {
     public static void main(String[] args) {
         String mazeFileName = "savedMaze.maze";
         AMazeGenerator mazeGenerator = new MyMazeGenerator();
-        Maze maze = mazeGenerator.generate(10, 10); //Generate new maze
-        maze.print();//TODO - REMOVE
+        Maze maze = mazeGenerator.generate(40, 40); //Generate new maze
+        //maze.print();//TODO - REMOVE
         try {
 // save maze to a file
             OutputStream out = new SimpleCompressorOutputStream(new FileOutputStream(mazeFileName));

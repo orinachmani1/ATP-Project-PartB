@@ -1,110 +1,74 @@
 package Server;
 
-import IO.MyDecompressorInputStream;
-import algorithms.mazeGenerators.Maze;
-import algorithms.mazeGenerators.MyMazeGenerator;
+import algorithms.mazeGenerators.*;
 import algorithms.search.*;
 
 import java.io.*;
-import java.util.ArrayList;
-
-import static Server.Configurations.properties;
 
 public class ServerStrategySolveSearchProblem implements IServerStrategy{
+    private String tempDirectoryPath;
+    public ServerStrategySolveSearchProblem() {
+        tempDirectoryPath=System.getProperty("java.io.tmpdir");
+    }
+
     @Override
     public void serverStrategy(InputStream inputStream, OutputStream outputStream) {
-        try
-        {
-            ObjectInputStream fromClient = new ObjectInputStream(inputStream);
-            ObjectOutputStream toClient = new ObjectOutputStream(outputStream);
+        try {
+            ObjectInputStream fc = new ObjectInputStream(inputStream);
+            ObjectOutputStream tc = new ObjectOutputStream(outputStream);
+            tc.flush();
+            Maze getMaze;
+            getMaze=(Maze)fc.readObject();
 
-            System.out.println("start solve maze");
-            //Object o = fromClient.readObject();
-            System.out.println("Object is OK");
-                //Maze maze = new MyDecompressorInputStream(b);
-            MyMazeGenerator mg= new MyMazeGenerator();
-            Maze maze = mg.generate(50,50);
-            SearchableMaze searchableMaze = new SearchableMaze(maze);
+            String fileP=tempDirectoryPath+getMaze.toString().hashCode()+"maze";
+            File file=new File(fileP);
+            if(!file.exists()){
+                SearchableMaze is= new SearchableMaze(getMaze);
+                Configurations configurations = Configurations.getInstance();
+                String algoName = configurations.SoltuionAlgoName();
+                ASearchingAlgorithm SearchAlgo;
+                if (algoName.equals("BreadthFirstSearch")) {
+                    SearchAlgo= new BreadthFirstSearch();
+                } else if (algoName.equals("DepthFirstSearch")) {
+                    SearchAlgo= new DepthFirstSearch();
+                } else if (algoName.equals("BestFirstSearch") ){
+                    SearchAlgo= new BestFirstSearch();
+                } else {
+                    SearchAlgo= null;
+                }
 
-            Solution solution;
-            ASearchingAlgorithm as= new BestFirstSearch();
-            solution = as.solve(searchableMaze);
-
-            ArrayList<AState> mazeSolutionSteps = solution.getSolutionPath();
-            AState a= mazeSolutionSteps.get(0);
-            System.out.println(a.toString());
-            //toClient.writeObject(solution);
-            System.out.println("bye");
-        }
-        catch (Exception e){
-            System.out.println("erorr");
-        }
-
-        //solution = searchAlgo.solve(searchableMaze);
-
-//        FileOutputStream fileOutputStream = new FileOutputStream(tempPath);
-//        ObjectOutputStream objectOutputStream = new ObjectOutputStream((fileOutputStream));
-//        objectOutputStream.flush();
-//
-//        objectOutputStream.writeObject(solution);
-//        objectOutputStream.flush();
-//        fileOutputStream.close();
-//        objectOutputStream.close();
-
-        //toClient.writeObject(solution);
-        //toClient.close();
-
-        /*
-        int hashC =  maze.toString().hashCode();
-        String tempDirectoryPath = System.getProperty("java.io.tmpdir");
-        String tempPath = tempDirectoryPath + hashC;
-        File file = new File(tempPath);
-
-        if(file.exists()) // if the maze already solved  - return the calculated solution
-        {
-            FileInputStream fileInput = new FileInputStream(tempPath);
-            ObjectInputStream fileOutput = new ObjectInputStream(fileInput);
-
-            Solution solution;
-            solution = (Solution)fileOutput.readObject();
-            toClient.writeObject(solution);
-            fileInput.close();
-            fileOutput.close();
-        }
-
-        else //if the maze still unsolved
-            {
-            String nameOfAlgo = properties.getProperty("SearchingAlgorithm");
-            ASearchingAlgorithm searchAlgo;
-
-            if (nameOfAlgo.equals("DeptFirstSearch")) {
-                searchAlgo = new DepthFirstSearch();
-            }
-            else if(nameOfAlgo.equals("BreadthFirstSearch")) {
-                searchAlgo = new BreadthFirstSearch();
-            }
-            else if (nameOfAlgo.equals("BestFirstSearch")){
-                searchAlgo = new BestFirstSearch();
+                Solution solution;
+                solution=SearchAlgo.solve(is);
+                tc.flush();
+                tc.writeObject(solution);
+                FileOutputStream fileO = new FileOutputStream(fileP);
+                ObjectOutputStream mazeS=new ObjectOutputStream(fileO);
+                mazeS.writeObject(solution);
+                //System.out.println("aTesta");
+                mazeS.close();
             }
             else{
-                searchAlgo = new BestFirstSearch();
+                FileInputStream fileN = new FileInputStream(fileP);
+                ObjectInputStream mazeAgain=new ObjectInputStream(fileN);
+                tc.writeObject((Solution)mazeAgain.readObject());
+
+                mazeAgain.close();
+
             }
+            fc.close();
+            tc.close();
 
-            //SearchableMaze sm = new SearchableMaze(maze);
-            Solution solution;
-            solution = searchAlgo.solve(searchableMaze);
 
-            FileOutputStream fileOutputStream = new FileOutputStream(tempPath);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream((fileOutputStream));
-            objectOutputStream.flush();
 
-            objectOutputStream.writeObject(solution);
-            objectOutputStream.flush();
-            fileOutputStream.close();
-            objectOutputStream.close();
 
-            toClient.writeObject(solution);
-        }*/
-
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
+
+
+
+
 }
