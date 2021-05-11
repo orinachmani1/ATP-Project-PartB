@@ -5,8 +5,7 @@ import Server.*;
 import algorithms.mazeGenerators.AMazeGenerator;
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.MyMazeGenerator;
-import algorithms.search.AState;
-import algorithms.search.Solution;
+import algorithms.search.*;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -215,10 +214,11 @@ public class main {
                         int size = (int) (50 * (i+1));
                         ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
                         toServer.flush();
+                        /*int x =5;
+                        toServer.writeObject(x);*/
                         MyMazeGenerator mg = new MyMazeGenerator();
-
                         Maze maze = mg.generate(size, size);
-                        toServer.writeObject(maze); //send maze to server
+                        toServer.writeObject(maze); //send maze to server     ///  ERROR!!
                         toServer.flush();
                         ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
                         Solution mazeSolution = (Solution) fromServer.readObject(); //read generated maze (compressed with MyCompressor) from server
@@ -243,6 +243,7 @@ public class main {
         } finally {
         }
         total_pass +=  testsPassed.get();
+
     }
     //</editor-fold>
 }
