@@ -3,7 +3,8 @@ package test;
 public class GeneralCheckingFunctions {
 
     public static String getGithubLink(){
-        String githubLink = "https://github.com/orinachmani1/ATP";
+        //String githubLink = "https://github.com/orinachmani1/ATP";  part A
+        String githubLink = "https://github.com/orinachmani1/ATP-Project-PartB.git";// part B
         return githubLink;
     }
 
